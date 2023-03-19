@@ -22,7 +22,6 @@ function App(): JSX.Element {
   
   useEffect(() => {
     SplashScreen.hide()
-  //  deleteAllTablesAsync()
     
   }, [])
 

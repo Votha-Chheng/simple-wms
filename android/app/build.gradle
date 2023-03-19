@@ -95,13 +95,13 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.wmwwithwatermelondb"
+    namespace "com.vmw.simplewms"
     defaultConfig {
-        applicationId "com.wmwwithwatermelondb"
+        applicationId "com.vmw.simplewms"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "0.9.0"
     }
 
     splits {

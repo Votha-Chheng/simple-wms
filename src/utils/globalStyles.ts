@@ -85,8 +85,6 @@ const globalStyles = StyleSheet.create({
   modalStyle : {
     backgroundColor: '#f8f4f9', 
     padding: 10,
-    maxHeight:250,
-    fontWeight: '900'
   },
   scanInOutTitle: {
     fontFamily:"Inter-Medium",

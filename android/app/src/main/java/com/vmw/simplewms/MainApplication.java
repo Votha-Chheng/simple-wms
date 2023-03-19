@@ -1,4 +1,4 @@
-package com.wmwwithwatermelondb;
+package com.vmw.simplewms;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

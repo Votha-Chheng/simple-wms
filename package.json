@@ -1,6 +1,6 @@
 {
-  "name": "wmwithwatermelondb",
-  "version": "0.0.1",
+  "name": "simplewms",
+  "version": "0.9.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

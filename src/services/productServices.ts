@@ -154,9 +154,12 @@ export const createProduct = async (body: ProductDto): Promise<ServiceResponse>=
       }) 
 
       if(result){
-        response = {
-          status: "Success",
-          data: result.instantiateProductModel()
+        const prod: Product = await result.instantiateProductModel()
+        if(prod){
+          response = {
+            status: "Success",
+            data: prod
+          }
         }
       }
     })

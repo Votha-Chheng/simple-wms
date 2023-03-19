@@ -128,7 +128,7 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
       <View style={styles.filters}>
         <Chip 
           mode={
-            (dateEntree === true && recent === true && parType === ""  && selectedMarqueOrCategory === null) || 
+            (dateEntree === true && recent === true && parType === ""  && selectedMarqueOrCategory === null && alertStock === false) || 
             (dateEntree === true && recent === true && parType === "" && alertStock === true && selectedMarqueOrCategory === null) ||
             (dateEntree === true && recent === true && parType !== "" && selectedMarqueOrCategory !== null) 
             ? "flat"
