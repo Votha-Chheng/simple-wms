@@ -124,13 +124,13 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
         />
       }
       </View>
-      <Text style={{textAlign:"center", fontFamily:"Inter-SemiBold", fontSize:15}}>Trier selon :</Text>
+      <Text style={{textAlign:"center", fontFamily:"Inter-SemiBold", fontSize:15, color:"#6e6e72"}}>Trier selon :</Text>
       <View style={styles.filters}>
         <Chip 
           mode={
-            (dateEntree === true && recent === true && parType === ""  && selectedMarqueOrCategory === null && alertStock === false) || 
+            (dateEntree === true && recent === true && parType === ""  && selectedMarqueOrCategory === null && alertStock === false && selectedMarqueOrCategory === null) || 
             (dateEntree === true && recent === true && parType === "" && alertStock === true && selectedMarqueOrCategory === null) ||
-            (dateEntree === true && recent === true && parType !== "" && selectedMarqueOrCategory !== null) 
+            (dateEntree === true && recent === true && parType !== "" && selectedMarqueOrCategory !== null)
             ? "flat"
             :"outlined"
           }

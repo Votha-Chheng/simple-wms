@@ -6,7 +6,7 @@ import { hideModal, showModal } from '../../store/slices/modal'
 import Product from '../../classes/Product'
 import { RootState } from '../../store/store'
 import { displayProductByFilters } from '../../utils/displayProductByFilters'
-import { findProductModelById, getProducts, observeProductsList, setProductsFromCollection } from '../../services/productServices'
+import { findProductModelById, observeProductsList, setProductsFromCollection } from '../../services/productServices'
 import { getSingleProduct } from '../../store/slices/productsAndCategories'
 import { showToast } from '../../utils/showToast'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
@@ -19,6 +19,8 @@ import Loader from '../../sharedUI/Loader'
 import ProductForm from '../../sharedUI/ProductForm'
 import { observeCategoriesList } from '../../services/categoryServices'
 import CategoryModel from '../../models/CategoryModel'
+import { Provider } from 'react-native-paper'
+import { selectMarqueOrCategory } from '../../store/slices/selectedMarqueOrCategory'
 
 const ListeProduitsScreen: FC = () => {
   const [modify, setModify] = useState<boolean>(false)
@@ -40,10 +42,12 @@ const ListeProduitsScreen: FC = () => {
   useEffect(()=>{
     dispatch(resetBarcode())
     dispatch(hideModal())
-
+    dispatch(selectMarqueOrCategory(null))
+    
     return(()=> {
       dispatch(resetBarcode())
       dispatch(hideModal())
+      dispatch(selectMarqueOrCategory(null))
     })
   }, [])
 
@@ -82,40 +86,39 @@ const ListeProduitsScreen: FC = () => {
 
   return (
     <View style={styles.screenContainer}>
-    {
-      loading 
-      ?
-      <Loader spinnerColor='blue'/>
-      :
-      visible 
-      ?
-      <View style={{height: "100%", width:"100%"}}>  
-        <ModalView>
-          {
-            modify 
-            ? <ProductForm newProduct={false} />
-            : <DisplayProductInfos setModify={setModify}/>
-          }
-        </ModalView>
-      </View>
-      :
-      <View>
-        <FlatList
-          ListHeaderComponent={
-            <FilterProducts products={products} />
-          }
-          data={displayProductByFilters(productsCollection, filters, selectedMarqueOrCategory, categories)}
-          keyExtractor={(item: Product) => item.id.toString()}
-          renderItem = {({item}) => (
-            <InventaireListRender
-              data={item}
-              onPressFunction={()=>onPressItem(item.id.toString())}
-            />
-          )}
-          ListEmptyComponent={<Text>Aucun produit trouvé</Text>}
-        />
-      </View>
-    }
+        {
+          loading 
+          ?
+          <Loader spinnerColor='blue'/>
+          :
+          modify
+          ?
+          <ProductForm newProduct={false} setModify={setModify} />
+          :
+          <View style={{height: "100%", width:"100%"}}>  
+            <Provider>
+              <ModalView visible={visible}>
+                <DisplayProductInfos setModify={setModify} loading={loading}/>
+              </ModalView>
+            <View>
+              <FlatList
+                ListHeaderComponent={
+                  <FilterProducts products={products} />
+                }
+                data={displayProductByFilters(productsCollection, filters, selectedMarqueOrCategory, categories)}
+                keyExtractor={(item: Product) => item.id.toString()}
+                renderItem = {({item}) => (
+                  <InventaireListRender
+                    data={item}
+                    onPressFunction={()=>onPressItem(item.id.toString())}
+                  />
+                )}
+                ListEmptyComponent={<Text>Aucun produit trouvé</Text>}
+              />
+            </View>
+            </Provider>
+          </View>
+        }
     </View>
   )
 }

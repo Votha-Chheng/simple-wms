@@ -31,7 +31,7 @@ function App(): JSX.Element {
     success: (props: any) =>(
       <BaseToast
         {...props}
-        style={{ borderLeftColor: 'green', width }}
+        style={{ borderLeftColor: 'green', width, height: 100 }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
           fontSize: 17.5,
@@ -46,7 +46,7 @@ function App(): JSX.Element {
     info: (props:any) =>(
       <BaseToast
         {...props}
-        style={{ borderLeftColor: '#1D9BF0', width }}
+        style={{ borderLeftColor: '#1D9BF0', width, height: 100  }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
           fontSize: 17.5,
@@ -61,7 +61,7 @@ function App(): JSX.Element {
     error: (props:any) =>(
       <BaseToast
         {...props}
-        style={{ borderLeftColor: 'red', width }}
+        style={{ borderLeftColor: 'red', width, height: 100 }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
           fontSize: 15,

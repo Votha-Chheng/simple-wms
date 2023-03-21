@@ -1,6 +1,6 @@
 import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { FC, useState } from 'react'
-import { ActivityIndicator, Button, Chip, Switch } from 'react-native-paper'
+import React, { FC, useState, Dispatch, SetStateAction } from 'react'
+import { ActivityIndicator, Button, Switch } from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideModal } from '../../../store/slices/modal'
 import { getSingleProduct } from '../../../store/slices/productsAndCategories'
@@ -12,12 +12,12 @@ import { findProductModelById } from '../../../services/productServices'
 import ProductModel from '../../../models/ProductModel'
 
 type DisplayProductInfosProps = {
-  setModify: Function
+  setModify: Dispatch<SetStateAction<boolean>>
+  loading: boolean
 }
 
-const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify}: DisplayProductInfosProps) => {
+const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify, loading}: DisplayProductInfosProps) => {
   const { singleProduct } = useSelector((state: RootState)=> state.productAndCategories)
-  const [loading, setLoading] = useState<boolean>(false)
 
   const dispatch = useDispatch()
 
@@ -94,7 +94,7 @@ const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify}: DisplayP
             && 
             <View style={[styles.row]}>
               <Text style={[styles.textMarginRight]}>Site web du fournisseur :</Text> 
-              <Text onPress={()=> Linking.openURL(singleProduct.siteFournisseur)}>https://{singleProduct.siteFournisseur}</Text>
+              <Text onPress={()=> Linking.openURL("https://"+singleProduct.siteFournisseur)}>https://{singleProduct.siteFournisseur}</Text>
             </View>
           }
           {
@@ -120,7 +120,6 @@ const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify}: DisplayP
               }
             </View>
           }
-            
           </View>
 
           <View style={globalStyles.buttonRow}>
@@ -130,8 +129,9 @@ const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify}: DisplayP
             <Button 
               mode="contained" 
               onPress={()=>{
-                setModify(true)}
-              } 
+                setModify(true)
+                dispatch(hideModal())
+              }}
               buttonColor="#1C9CEA">
               Modifier les infos produit
             </Button>

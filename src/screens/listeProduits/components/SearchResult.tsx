@@ -15,6 +15,8 @@ const SearchResult: FC = () => {
   return (
     <View style={styles.container}>
       <TextInput
+        style={{backgroundColor:"white"}}
+        placeholderTextColor="#6e6e72"
         label="Rechercher un mot"
         mode="outlined"
         dense={true}

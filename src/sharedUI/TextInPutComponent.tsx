@@ -17,6 +17,7 @@ const TextInPutComponent: FC<TextInPutComponentProps> = ({setter, stateValue, la
   return (
     <TextInput
       mode='outlined'
+      placeholderTextColor="#6e6e72"
       label={label}
       value={stateValue}
       activeOutlineColor="#337171"

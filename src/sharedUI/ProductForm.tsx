@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import React, { FC, useEffect, useState } from 'react'
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store/store'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -20,9 +20,10 @@ import ServiceResponse from '../classes/ServiceResponse'
 
 type ProductFormProps = {
   newProduct: boolean
+  setModify?: Dispatch<SetStateAction<boolean>>
 }
 
-const ProductForm: FC<ProductFormProps> = ({newProduct}: ProductFormProps) => {
+const ProductForm: FC<ProductFormProps> = ({newProduct, setModify}: ProductFormProps) => {
 
   const {barcode} = useSelector((state: RootState)=> state.codeBarDataType)
   const {singleProduct} = useSelector((state: RootState)=> state.productAndCategories)
@@ -157,16 +158,16 @@ const ProductForm: FC<ProductFormProps> = ({newProduct}: ProductFormProps) => {
   if(loading) return <Loader spinnerColor='blue' />
 
   return (
-    <ScrollView style={{minHeight: 500, width:"100%", backgroundColor:"#f8f4f9"}}>
+    <ScrollView style={{minHeight: 500, width:"100%", backgroundColor:"#f8f4f9", padding:10}}>
       <Text style={styles.title}>{newProduct ? "Nouveau produit": "Modifier les infos produit"}</Text>
       <View style={{marginVertical:10, alignItems:"center"}}>
-        <Text>Code-barre n° 
+        <Text style={{color:"#6e6e72"}}>Code-barre n° 
           <Text style={styles.type}>{newProduct === true ? barcode : barcodeExisting}</Text>
         </Text>
       </View>
       {
         newProduct &&
-        <Text style={{textAlign:"center"}}>Renseignez les informations suivantes :</Text>
+        <Text style={{textAlign:"center", color:"#6e6e72", marginBottom:10}}>Renseignez les informations suivantes :</Text>
       }
       <SafeAreaView>
         <View style={{borderColor: "green", borderWidth:2, padding:2.5, marginBottom:10, borderRadius:10}}>
@@ -267,7 +268,7 @@ const ProductForm: FC<ProductFormProps> = ({newProduct}: ProductFormProps) => {
             icon='close'
             style={{marginHorizontal:5}}
             onPress={() => {
-              dispatch(hideModal())
+              setModify(false)
               dispatch(resetBarcode())
               dispatch(getSingleProduct(undefined))
             }}
@@ -276,8 +277,7 @@ const ProductForm: FC<ProductFormProps> = ({newProduct}: ProductFormProps) => {
           </Button>
 
           <Button
-            mode='elevated'
-            textColor='white'
+            mode='contained'
             icon='check-bold'
             buttonColor='green'
             style={{marginHorizontal:5}}
@@ -300,7 +300,8 @@ const styles = StyleSheet.create({
     textAlign : 'center',
     fontFamily : "Roboto_900Black",
     textTransform:'uppercase',
-    marginBottom:10
+    marginBottom:10,
+    color: "#6e6e72"
   },
   type : {
     fontFamily: "Roboto_900Black"

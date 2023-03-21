@@ -7,19 +7,16 @@ import { RootState } from '../store/store'
 
 type ModalProps = {
   children: JSX.Element
+  visible: boolean
 }
 
-const ModalView: FC<ModalProps> = ({children}) => {
-  const {visible} = useSelector((state: RootState)=> state.modal)
-
+const ModalView: FC<ModalProps> = ({children, visible}) => {
   return (
-    <Provider>
-      <Portal>
-        <Modal visible={visible} dismissable={false} contentContainerStyle={globalStyles.modalStyle}>
-          {children}
-        </Modal>   
-      </Portal>
-    </Provider>  
+    <Portal>
+      <Modal visible={visible} dismissable={false} contentContainerStyle={globalStyles.modalStyle}>
+        {children}
+      </Modal>   
+    </Portal>
   )
 }
 

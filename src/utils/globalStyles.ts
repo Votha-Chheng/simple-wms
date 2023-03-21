@@ -15,13 +15,14 @@ const globalStyles = StyleSheet.create({
     marginBottom:10,
     fontSize:15, 
     padding:0,
-    width: '100%'
+    width: '100%',
+    backgroundColor:"white"
   },
-
   screenTitle: {
     fontSize: 20,
     textAlign:"center",
-    fontFamily:"Roboto-Bold"
+    fontFamily:"Roboto-Bold",
+    color:"#6e6e72"
   },
   infoQty: {
     width: "25%",

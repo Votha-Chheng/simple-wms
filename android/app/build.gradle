@@ -100,8 +100,8 @@ android {
         applicationId "com.vmw.simplewms"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "0.9.0"
+        versionCode 3
+        versionName "0.9.1"
     }
 
     splits {
