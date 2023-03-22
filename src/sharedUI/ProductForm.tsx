@@ -132,6 +132,7 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify}: ProductFormP
             dispatch(getSingleProduct(undefined))
             dispatch(resetBarcode())
             dispatch(hideModal())
+            setModify(false)
             showToast("success", `Infos du produit mis à jour`, `Le produit ${prodModel.nom} a été modifié.`)
 
             const updatedProd = await findProductModelById(prodModel.id)
@@ -151,7 +152,7 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify}: ProductFormP
       
     } else {
       setLoading(false)
-      showToast("error", "Mise à jour avortée", `La mise à jour n'a pas pu se faire. Recommencez l'opération.`)
+      showToast("error", "Mise à jour avortée", `La mise à jour n'a pas pu se faire. Il manque peut-être des informations.`)
     } 
   }
 

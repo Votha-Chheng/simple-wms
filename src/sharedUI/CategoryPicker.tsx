@@ -36,22 +36,6 @@ const CategoryPicker: FC<CategoryPickerProps> = ({ onFocus, onBlur,focused, cate
     observeCategoriesList(setCategoriesList)
   }, [db])
 
-  // const fetchAllCategories = async(): Promise<void> => {
-  //   const categoriesDb = await getCategoriesCollection()
-
-  //   if(categoriesDb.length>0){
-  //     const collection = instantiateCategoriesCollection(categoriesDb)
-  //     dispatch(getAllCategories(collection))
-  //   } else {
-  //     showToast("error", "Pas de catégorie", "La base de données semble inaccessible.")
-  //   }
-  // }
-
-  // useEffect(()=> {
-  //   fetchAllCategories()
-
-  // }, [getCategoriesCollection])
-
   useEffect(()=>{
     if(selectedCategoryName === "Nouvelle catégorie") {
       setCategoryInput("")
@@ -69,26 +53,30 @@ const CategoryPicker: FC<CategoryPickerProps> = ({ onFocus, onBlur,focused, cate
   }
 
   const validateNewCategory = async (newCategoryName: string): Promise<void>=>{
-    setLoading(true)
-    const exists = await database.get<CategoryModel>("categories").query(Q.where("nom", newCategoryName))
-
-    if(exists.length>0){
-      setLoading(false)
-      showToast("error", "Nom existant", `La catégorie existe déjà !`)
-
+    if(newCategoryName.length<1){
+      showToast("error", "Pas de nom de catégorie", `Tapez d'abord un nom de catégorie pour pouvoir la créer !`)
     } else {
-      const result = await createCategory(newCategoryName.trim().toUpperCase())
+      setLoading(true)
+      const exists = await database.get<CategoryModel>("categories").query(Q.where("nom", newCategoryName))
   
-      if(result.status === 'Success'){
-        setSelectedCategoryName(result.data.nom)
-
+      if(exists.length>0){
         setLoading(false)
-        showToast("success", "Nouvelle catégorie", `La catégorie ${result.data.nom} a été créee.`)
-      }
+        showToast("error", "Nom existant", `La catégorie existe déjà !`)
   
-      if(result.status === 'Rejected'){
-        setLoading(false)
-        showToast("error", "Erreur", `Une erreur est survenue.`)    
+      } else {
+        const result = await createCategory(newCategoryName.trim().toUpperCase())
+    
+        if(result.status === 'Success'){
+          setSelectedCategoryName(result.data.nom)
+  
+          setLoading(false)
+          showToast("success", "Nouvelle catégorie", `La catégorie ${result.data.nom} a été créee.`)
+        }
+    
+        if(result.status === 'Rejected'){
+          setLoading(false)
+          showToast("error", "Erreur", `Une erreur est survenue.`)    
+        }
       }
     }
   }

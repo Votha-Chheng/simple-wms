@@ -2,7 +2,7 @@ import { View } from 'react-native'
 import React, { FC, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../store/store'
-import ModalView from './ModalView'
+import Modal from 'react-native-modal'
 import UpdatingProductStock from './UpdatingProductStock'
 import ProductForm from './ProductForm'
 import CameraView from './CameraView'
@@ -34,9 +34,9 @@ const ScanningResult: FC<ScanningResultProps> = ({backgroundColor, addStock, new
         <View style={{height: "100%", width:"100%", backgroundColor}}>
         { 
           (productExists === true && singleProduct) && 
-          <ModalView visible={visible}>
+          <Modal isVisible={visible}>
             <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} /> 
-          </ModalView>
+          </Modal>
         }
         { productExists === false && !singleProduct && scanOut === false && <ProductForm newProduct={newProduct}/>}        
         </View>

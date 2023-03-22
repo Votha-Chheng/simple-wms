@@ -1,5 +1,5 @@
-import { Linking, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React, { FC, useState, Dispatch, SetStateAction } from 'react'
+import { Linking, StyleSheet, Text, View } from 'react-native'
+import React, { FC, Dispatch, SetStateAction } from 'react'
 import { ActivityIndicator, Button, Switch } from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideModal } from '../../../store/slices/modal'
@@ -48,7 +48,7 @@ const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify, loading}:
   }
 
   return (
-    <ScrollView>
+    <View style={globalStyles.modalStyle}>
       {
         singleProduct !==undefined &&
         <View>
@@ -123,23 +123,30 @@ const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify, loading}:
           </View>
 
           <View style={globalStyles.buttonRow}>
-            <Button mode="contained" onPress={()=>goBackButton()} buttonColor="grey" labelStyle={{color:"white"}} >
+            <Button 
+              mode="contained" 
+              onPress={()=>goBackButton()} 
+              buttonColor="grey" 
+              labelStyle={{color:"white"}} 
+            >
               Retour
             </Button>
             <Button 
               mode="contained" 
+              buttonColor="#1C9CEA"
+              labelStyle={{color:"white"}} 
               onPress={()=>{
                 setModify(true)
                 dispatch(hideModal())
               }}
-              buttonColor="#1C9CEA">
+            >
               Modifier les infos produit
             </Button>
           </View>
         </View>  
       }
       
-    </ScrollView>  
+    </View>  
   )
 }
 
@@ -154,12 +161,15 @@ const styles = StyleSheet.create({
   },
   textMarginRight: {
     marginRight: 10,
-    fontFamily:"Roboto-BoldItalic"
+    fontFamily:"Roboto-BoldItalic",
+    color:"#6e6e72"
   },
   value: {
-    fontFamily:"Rubik-Regular"
+    fontFamily:"Rubik-Regular",
+    color:"#6e6e72"
   },
   marque: {
-    fontFamily:"Rubik-SemiBoldItalic"
+    fontFamily:"Rubik-SemiBoldItalic",
+    color:"#6e6e72"
   }
 })

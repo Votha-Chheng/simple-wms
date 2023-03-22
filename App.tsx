@@ -31,10 +31,11 @@ function App(): JSX.Element {
     success: (props: any) =>(
       <BaseToast
         {...props}
-        style={{ borderLeftColor: 'green', width, height: 100 }}
+        style={{ borderLeftColor: 'green', width, flexWrap:'wrap', height:120 }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
+        text2NumberOfLines={2}
         text1Style={{
-          fontSize: 17.5,
+          fontSize: 19,
           color:"green"
         }}
         text2Style={{
@@ -46,10 +47,11 @@ function App(): JSX.Element {
     info: (props:any) =>(
       <BaseToast
         {...props}
-        style={{ borderLeftColor: '#1D9BF0', width, height: 100  }}
+        style={{ borderLeftColor: '#1D9BF0', width, flexWrap:'wrap', height:120  }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
+        text2NumberOfLines={2}
         text1Style={{
-          fontSize: 17.5,
+          fontSize: 19,
           color:"#1D9BF0"
         }}
         text2Style={{
@@ -61,10 +63,11 @@ function App(): JSX.Element {
     error: (props:any) =>(
       <BaseToast
         {...props}
-        style={{ borderLeftColor: 'red', width, height: 100 }}
-        contentContainerStyle={{ paddingHorizontal: 15 }}
+        style={{ borderLeftColor: 'red', width, height:120 }}
+        text2NumberOfLines={2}
+        contentContainerStyle={{ paddingHorizontal: 15, flexWrap:'wrap' }}
         text1Style={{
-          fontSize: 15,
+          fontSize: 19,
           color:"red"
         }}
         text2Style={{

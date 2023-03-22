@@ -83,9 +83,11 @@ const globalStyles = StyleSheet.create({
   flexRow : {
     flexDirection:"row",
   },
-  modalStyle : {
-    backgroundColor: '#f8f4f9', 
-    padding: 10,
+  modalStyle: {
+    backgroundColor:'white', 
+    paddingVertical:15, 
+    paddingHorizontal:10, 
+    borderRadius:10
   },
   scanInOutTitle: {
     fontFamily:"Inter-Medium",

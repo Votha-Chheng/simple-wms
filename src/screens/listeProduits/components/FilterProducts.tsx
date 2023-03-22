@@ -36,8 +36,6 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
         list =  [ ...list, prod[keyName]["nom"]]
       })
     }
-
-
     return Array.from((new Set(list))).sort()
   } 
 
@@ -56,7 +54,7 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
 
   return (
     <View style={styles.filterContainer}>
-      <Text style={{textAlign:"center", fontFamily:"Inter-SemiBold", fontSize:15, marginVertical:10}}>Afficher par :</Text>
+      <Text style={{textAlign:"center", fontFamily:"Inter-SemiBold", fontSize:15, color:"#6e6e72", marginVertical:10}}>Afficher par :</Text>
       <View style={styles.filters}>
         <Chip 
           style={styles.chipStyle}
@@ -128,9 +126,13 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
       <View style={styles.filters}>
         <Chip 
           mode={
-            (dateEntree === true && recent === true && parType === ""  && selectedMarqueOrCategory === null && alertStock === false && selectedMarqueOrCategory === null) || 
-            (dateEntree === true && recent === true && parType === "" && alertStock === true && selectedMarqueOrCategory === null) ||
-            (dateEntree === true && recent === true && parType !== "" && selectedMarqueOrCategory !== null)
+            (dateEntree === true && recent == true) && 
+            (
+              (parType === ""  && selectedMarqueOrCategory === null && alertStock === false) || 
+              (parType === "" && alertStock === true && selectedMarqueOrCategory === null) ||
+              (parType !== "" && selectedMarqueOrCategory !== null)
+            )
+            
             ? "flat"
             :"outlined"
           }
@@ -150,9 +152,12 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
         </Chip>
         <Chip 
           mode={
-            (dateEntree === true && recent === false && parType === ""  && selectedMarqueOrCategory === null) || 
-            (dateEntree === true && recent === false && parType === "" && alertStock === true && selectedMarqueOrCategory === null) ||
-            (dateEntree === true && recent === false && parType !== "" && selectedMarqueOrCategory !== null)
+            (dateEntree === true && recent == false) && 
+            (
+              (parType === ""  && selectedMarqueOrCategory === null && alertStock === false) || 
+              (parType === "" && alertStock === true && selectedMarqueOrCategory === null) ||
+              (parType !== "" && selectedMarqueOrCategory !== null)
+            )
             ? "flat"
             :"outlined"
           }
@@ -160,7 +165,6 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
           disabled={
             ((parType === "marque") && (selectedMarqueOrCategory === null)) ||
             ((parType === "category") && (selectedMarqueOrCategory === null))
-            
           }
           onPress={() => {
             dispatch(setRecent(false))

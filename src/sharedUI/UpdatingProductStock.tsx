@@ -65,7 +65,7 @@ const UpdatingProductStock: FC<UpdatingProductStockProps> = ({addStock, scanOut,
   }
   
   return (
-    <View>
+    <View style={globalStyles.modalStyle}>
       <Text style={[globalStyles.screenTitle, {color: backgroundColor}]}>{scanOut ? "Retirer de l'inventaire" : "Ajouter dans l'inventaire"}</Text>
       <Text style={{textAlign:"center", marginVertical:20}}>Code-barre n° {singleProduct.barcodeNumber}</Text>
       <View style={{flexDirection:"row", width:"100%", justifyContent:"space-between", marginBottom:20}}>

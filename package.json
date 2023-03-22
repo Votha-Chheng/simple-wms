@@ -1,6 +1,6 @@
 {
   "name": "simplewms",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -21,6 +21,7 @@
     "react": "18.2.0",
     "react-native": "0.71.3",
     "react-native-camera-kit": "^13.0.0",
+    "react-native-modal": "^13.0.1",
     "react-native-paper": "^5.2.0",
     "react-native-safe-area-context": "^4.5.0",
     "react-native-screens": "^3.20.0",

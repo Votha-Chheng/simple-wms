@@ -12,14 +12,13 @@ import { showToast } from '../../utils/showToast'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
 import FilterProducts from './components/FilterProducts'
 import InventaireListRender from './components/InventaireListRender'
-import ModalView from '../../sharedUI/ModalView'
+import Modal from 'react-native-modal'
 import DisplayProductInfos from './components/DisplayProductInfos'
 import ProductModel from '../../models/ProductModel'
 import Loader from '../../sharedUI/Loader'
 import ProductForm from '../../sharedUI/ProductForm'
 import { observeCategoriesList } from '../../services/categoryServices'
 import CategoryModel from '../../models/CategoryModel'
-import { Provider } from 'react-native-paper'
 import { selectMarqueOrCategory } from '../../store/slices/selectedMarqueOrCategory'
 
 const ListeProduitsScreen: FC = () => {
@@ -86,39 +85,36 @@ const ListeProduitsScreen: FC = () => {
 
   return (
     <View style={styles.screenContainer}>
-        {
-          loading 
-          ?
-          <Loader spinnerColor='blue'/>
-          :
-          modify
-          ?
-          <ProductForm newProduct={false} setModify={setModify} />
-          :
-          <View style={{height: "100%", width:"100%"}}>  
-            <Provider>
-              <ModalView visible={visible}>
-                <DisplayProductInfos setModify={setModify} loading={loading}/>
-              </ModalView>
-            <View>
-              <FlatList
-                ListHeaderComponent={
-                  <FilterProducts products={products} />
-                }
-                data={displayProductByFilters(productsCollection, filters, selectedMarqueOrCategory, categories)}
-                keyExtractor={(item: Product) => item.id.toString()}
-                renderItem = {({item}) => (
-                  <InventaireListRender
-                    data={item}
-                    onPressFunction={()=>onPressItem(item.id.toString())}
-                  />
-                )}
-                ListEmptyComponent={<Text>Aucun produit trouvé</Text>}
-              />
-            </View>
-            </Provider>
-          </View>
-        }
+    {
+      loading 
+      ?
+      <Loader spinnerColor='blue'/>
+      :
+      modify
+      ?
+      <ProductForm newProduct={false} setModify={setModify} />
+      :
+      <View>  
+        <Modal isVisible={visible}>
+          <DisplayProductInfos setModify={setModify} loading={loading}/>
+        </Modal>
+
+        <FlatList
+          ListHeaderComponent={
+            <FilterProducts products={products} />
+          }
+          data={displayProductByFilters(productsCollection, filters, selectedMarqueOrCategory, categories)}
+          keyExtractor={(item: Product)=> item.id.toString()}
+          renderItem = {({item}) => (
+            <InventaireListRender
+              data={item}
+              onPressFunction={()=>onPressItem(item.id.toString())}
+            />
+          )}
+          ListEmptyComponent={<Text>Aucun produit trouvé</Text>}
+        />
+      </View>
+    }
     </View>
   )
 }
