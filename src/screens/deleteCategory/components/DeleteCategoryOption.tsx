@@ -47,6 +47,7 @@ const DeleteCategoryOption: FC = () => {
 
   const handleDeleteCategory = async(id: string): Promise<void>=>{
     const catModel = await findCategoryModelById(id)
+    
     const response = await catModel.deleteSingleCategoryModel()
 
     if(response){

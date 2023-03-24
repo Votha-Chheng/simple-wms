@@ -92,7 +92,7 @@ const ListeProduitsScreen: FC = () => {
       :
       modify
       ?
-      <ProductForm newProduct={false} setModify={setModify} />
+      <ProductForm newProduct={false} setModify={setModify}/>
       :
       <View>  
         <Modal isVisible={visible}>
@@ -111,7 +111,7 @@ const ListeProduitsScreen: FC = () => {
               onPressFunction={()=>onPressItem(item.id.toString())}
             />
           )}
-          ListEmptyComponent={<Text>Aucun produit trouvé</Text>}
+          ListEmptyComponent={<Text style={{textAlign:"center", fontSize:20}}>Aucun produit dans l'inventaire.</Text>}
         />
       </View>
     }

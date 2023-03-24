@@ -20,10 +20,11 @@ import ServiceResponse from '../classes/ServiceResponse'
 
 type ProductFormProps = {
   newProduct: boolean
+  setProductExists?: Dispatch<SetStateAction<"undetermined"|"yes"|"no">>
   setModify?: Dispatch<SetStateAction<boolean>>
 }
 
-const ProductForm: FC<ProductFormProps> = ({newProduct, setModify}: ProductFormProps) => {
+const ProductForm: FC<ProductFormProps> = ({newProduct, setModify, setProductExists}: ProductFormProps) => {
 
   const {barcode} = useSelector((state: RootState)=> state.codeBarDataType)
   const {singleProduct} = useSelector((state: RootState)=> state.productAndCategories)
@@ -90,76 +91,96 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify}: ProductFormP
 
   const handleCreateProduct = async(body: Promise<ProductDto>): Promise<void> =>{
     setLoading(true)
-    const bodyResponse: ProductDto = await body
+    try {
+      const bodyResponse: ProductDto = await body
 
-    if(bodyResponse){
-      if(!handleFormValidation(bodyResponse)) {
-        showToast("error", "Informations manquantes", `Il manque des informations obligatoires.`)
-  
+      if(bodyResponse){
+        if(!handleFormValidation(bodyResponse)) {
+          setLoading(false)
+          showToast("error", "Informations manquantes", `Il manque des informations obligatoires.`)
+          
+        } else {
+          const response: ServiceResponse = await createProduct(bodyResponse)
+          
+          if(response.status === "Success"){
+            setProductExists("undetermined")
+            dispatch(resetBarcode())
+            dispatch(hideModal())
+            showToast("success", `Produit créé`, `Le produit ${response.data.nom} est rentré dans l'inventaire.`)
+            setLoading(false)
+            dispatch(getSingleProduct(undefined))
+          } else {
+            showToast("error", "Erreur", `Une erreur est survenue, rejeté...`)
+            setLoading(false)
+          }
+        }
       } else {
-        const response: ServiceResponse = await createProduct(bodyResponse)
-    
-        if(response.status === "Success"){
-          dispatch(resetBarcode())
-          dispatch(hideModal())
-          showToast("success", `Produit créé`, `Le produit ${response.data.nom} est rentré dans l'inventaire.`)
-        }
-        if(response.status === "Rejected"){
-          showToast("error", "Erreur", `Une erreur est survenue, rejeté...`)
-        }
+        showToast("error", "Erreur", `Il semble que des informations manquent...`)
+        setLoading(false)
       }
-
-    } 
-    dispatch(getSingleProduct(undefined))
-    setLoading(false)
+    } catch (error) {
+      console.log(error)
+      showToast("error", "Erreur", `Une erreur est survenue...`)
+      dispatch(getSingleProduct(undefined))
+      setLoading(false)
+    }
   }
 
   const handleUpdateProductInfos = async(id: string, body: Promise<ProductDto>): Promise<void>=> {
     setLoading(true)
-    const bodyResponse: ProductDto = await body
 
-    if(bodyResponse){
-      if(!handleFormValidation(bodyResponse)){
-        showToast("error", "Informations manquantes", `Il manque des informations obligatoires.`)
-
-      } else {
-        const prodModel = await findProductModelById(id)
-
-        if(prodModel){
-          const record = await prodModel.updateProductModelInformation(bodyResponse)
-          if(record){
-            setLoading(false)
-            dispatch(getSingleProduct(undefined))
-            dispatch(resetBarcode())
-            dispatch(hideModal())
-            setModify(false)
-            showToast("success", `Infos du produit mis à jour`, `Le produit ${prodModel.nom} a été modifié.`)
-
-            const updatedProd = await findProductModelById(prodModel.id)
-
-            if(updatedProd && updatedProd.stockLimite<updatedProd.qty) {
-              await updatedProd.setComandeEncours(false)
+    try {
+      const bodyResponse: ProductDto = await body
+  
+      if(bodyResponse){
+        if(!handleFormValidation(bodyResponse)){
+          showToast("error", "Informations manquantes", `Il manque des informations obligatoires.`)
+  
+        } else {
+          const prodModel = await findProductModelById(id)
+  
+          if(prodModel){
+            const record = await prodModel.updateProductModelInformation(bodyResponse)
+            if(record){
+              dispatch(getSingleProduct(undefined))
+              dispatch(resetBarcode())
+              dispatch(hideModal())
+              setModify(false)
+              setLoading(false)
+              showToast("success", `Infos du produit mis à jour`, `Le produit ${prodModel.nom} a été modifié.`)
+  
+              const updatedProd = await findProductModelById(prodModel.id)
+  
+              if(updatedProd && updatedProd.stockLimite<updatedProd.qty) {
+                await updatedProd.setComandeEncours(false)
+              }
+              
+            } else {
+              setLoading(false)
+              showToast("error", `Infos du produit non mises à jour`, `Le produit ${prodModel.nom} n'a pas été modifié.`)
             }
           } else {
             setLoading(false)
-            showToast("error", `Infos du produit non mises à jour`, `Le produit ${prodModel.nom} n'a pas été modifié.`)
+            showToast("error", `Mise à jour avortée`, `Le produit ${prodModel.nom} n'a été modifié.`)
           }
-        } else {
-          setLoading(false)
-          showToast("error", `Mise à jour avortée`, `Le produit ${prodModel.nom} n'a été modifié.`)
         }
-      }
+        
+      } else {
+        setLoading(false)
+        showToast("error", "Mise à jour avortée", `La mise à jour n'a pas pu se faire. Il manque peut-être des informations.`)
+      } 
       
-    } else {
+    } catch (error) {
+      console.log(error)
       setLoading(false)
-      showToast("error", "Mise à jour avortée", `La mise à jour n'a pas pu se faire. Il manque peut-être des informations.`)
-    } 
+      showToast("error", "Mise à jour avortée", `Une erreur est survenue...`)
+    }
   }
 
   if(loading) return <Loader spinnerColor='blue' />
 
   return (
-    <ScrollView style={{minHeight: 500, width:"100%", backgroundColor:"#f8f4f9", padding:10}}>
+    <ScrollView style={{width:"100%", backgroundColor:"#f8f4f9", padding:10}}>
       <Text style={styles.title}>{newProduct ? "Nouveau produit": "Modifier les infos produit"}</Text>
       <View style={{marginVertical:10, alignItems:"center"}}>
         <Text style={{color:"#6e6e72"}}>Code-barre n° 
@@ -269,7 +290,8 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify}: ProductFormP
             icon='close'
             style={{marginHorizontal:5}}
             onPress={() => {
-              setModify(false)
+              setModify ? setModify(false) : null
+              newProduct ? setProductExists('undetermined') : null
               dispatch(resetBarcode())
               dispatch(getSingleProduct(undefined))
             }}

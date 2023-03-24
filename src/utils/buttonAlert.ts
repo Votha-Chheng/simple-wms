@@ -1,13 +1,7 @@
 import { Alert } from "react-native"
 
 
-export const createAlertWithTwoButtons = (titre: string, messageAlert:string, onPressFunction:any, args:any[]) : void => {
-
-  function callbackStarter () {
-    const arg = [...arguments].concat(args)
-    onPressFunction(...arg)
-    console.log(arg)
-  }
+export const createAlertWithTwoButtons = (titre: string, messageAlert:string, onPressFunction:Function, argument?:any) : void => {
 
   Alert.alert(
     titre,
@@ -22,8 +16,8 @@ export const createAlertWithTwoButtons = (titre: string, messageAlert:string, on
       },
       { 
         text: "Je confirme", 
-        onPress: () => {
-          callbackStarter()
+        onPress: async() => {
+          onPressFunction(argument)
         },
         style: "default"
       }

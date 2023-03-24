@@ -113,4 +113,15 @@ export default class ProductModel extends Model {
       return false
     }
   }
+
+  
+  @writer async deleteSingleProductModel():Promise<boolean> {
+    try {
+      await this.destroyPermanently()
+      return true
+    } catch (error) {
+      console.log("Error coming from deleteSingleProductModel : " + error.message)
+      return false
+    }
+  }
 }

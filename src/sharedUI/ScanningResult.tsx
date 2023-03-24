@@ -20,29 +20,29 @@ const ScanningResult: FC<ScanningResultProps> = ({backgroundColor, addStock, new
   const { singleProduct } = useSelector((state: RootState)=> state.productAndCategories)
 
   const [loading, setLoading] = useState<boolean>(false)
-  const [productExists, setProductExists] = useState<boolean>(false)
+  const [productExists, setProductExists] = useState<"undetermined"|"yes"|"no">("undetermined")
 
   return (
     <View style={{width: "100%", height:"100%"}}>
-      {
-        loading
-        ?
-        <Loader backgroundColor={backgroundColor}/>
-        :
-        visible
-        ?
-        <View style={{height: "100%", width:"100%", backgroundColor}}>
-        { 
-          (productExists === true && singleProduct) && 
-          <Modal isVisible={visible}>
-            <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} /> 
-          </Modal>
-        }
-        { productExists === false && !singleProduct && scanOut === false && <ProductForm newProduct={newProduct}/>}        
-        </View>
-        :
-        <CameraView colorFrame={backgroundColor} title={scanOut ? "Consommer un produit":"Ajouter un produit"} scanOut={scanOut} setterFunction={setProductExists} setLoading={setLoading} />
-      }
+    {
+      loading
+      ?
+      <Loader backgroundColor={backgroundColor}/>
+      :
+      productExists === "yes" && singleProduct
+      ?
+      <View style={{height: "100%", width:"100%", backgroundColor}}>
+        <Modal isVisible={visible}>
+          <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} /> 
+        </Modal>
+      </View>
+      :
+      productExists === "no" && !singleProduct && scanOut === false
+      ? 
+      <ProductForm newProduct={newProduct} setProductExists={setProductExists} />
+      :
+      <CameraView colorFrame={backgroundColor} title={scanOut ? "Consommer un produit":"Ajouter un produit"} scanOut={scanOut} setterFunction={setProductExists} setLoading={setLoading} />
+    }
     </View>
   )
 }

@@ -1,10 +1,10 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { FC, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
 import { RootState } from '../../store/store'
 import { getSingleProduct } from '../../store/slices/productsAndCategories'
-import { deleteAllTablesAsync, deleteProductsWithoutCascadeAsync, observeProductsList, setProductsFromCollection } from '../../services/productServices'
+import { deleteAllTablesAsync, deleteSingleProductWithoutCascadeAsync, findProductModelById, observeProductsList, setProductsFromCollection } from '../../services/productServices'
 import { showToast } from '../../utils/showToast'
 import FilterProducts from '../listeProduits/components/FilterProducts'
 import { Button } from 'react-native-paper'
@@ -61,6 +61,49 @@ const DeleteProductScreen: FC = () => {
     }
   }
 
+  const alertDeleteProduct = (titre: string, messageAlert:string, id: string) : void => {
+
+    Alert.alert(
+      titre,
+      messageAlert,
+      [
+        { 
+          text: "Annuler", 
+          onPress: () => {
+            null
+          },
+          style:"cancel" 
+        },
+        { 
+          text: "Je confirme", 
+          onPress: async() => {
+            const prod = await findProductModelById(id)    
+            const response = await prod.deleteSingleProductModel()
+
+            if(response){
+              showToast("success", 'Produit supprimé', "Le produit a été supprimée avec succès.")
+            } else {
+              showToast("error", 'Erreur', "Une erreur est survenue !")
+            }
+          },
+          style: "default"
+        }
+  
+      ]
+    )
+  }
+
+  const deleteSingleProduct = async(id: string): Promise<void>=> {
+    const prod = await findProductModelById(id)    
+    const response = await prod.deleteSingleProductModel()
+
+    if(response){
+      showToast("success", 'Catégorie supprimée', "La catégorie a été supprimée.")
+    } else {
+      showToast("error", 'Erreur', "Une erreur est survenue !")
+    }
+  }
+
 
   if(loading) return <Loader spinnerColor='red' />
 
@@ -86,7 +129,7 @@ const DeleteProductScreen: FC = () => {
           <ItemProductToDelete
             data={item}
             onPressFunction={()=> {
-              createAlertWithTwoButtons(`Vous êtes sur le point de supprimer le produit : ${item.nom}`, "Confirmer pour supprimer définitivement le produit.", deleteProductsWithoutCascadeAsync, [item.id])
+              alertDeleteProduct("Attention !", "Vous êtes sur le point de supprimer définitivement ce produit de l'inventaire !", item.id)
             }}
           />
         )}

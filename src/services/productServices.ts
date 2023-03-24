@@ -71,7 +71,7 @@ export const deleteSingleProductWithoutCascadeAsync = async(id: string): Promise
   let message: ServiceResponse = {status: "Pending", data: null}
 
   try {
-    const record = await findProductModelById(id)
+    const record: ProductModel = await findProductModelById(id)
     
     if(record){
       await record.destroyPermanently()

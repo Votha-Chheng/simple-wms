@@ -16,7 +16,7 @@ interface CameraProps {
   colorFrame: string
   title?: string 
   scanOut: boolean
-  setterFunction: Dispatch<SetStateAction<boolean>>
+  setterFunction: Dispatch<SetStateAction<string>>
   setLoading: Dispatch<SetStateAction<boolean>>
 }
 
@@ -37,24 +37,20 @@ const CameraView: FC<CameraProps> = ({colorFrame, title, scanOut, setterFunction
         const prod: Product = await result[0].instantiateProductModel()
 
         if(prod){
-          console.log(prod)
           dispatch(getSingleProduct(prod))
-          setterFunction(true)
+          setterFunction("yes")
           dispatch(showModal())
           setLoading(false)
         }
       } else if(result.length<1) {
         dispatch(getSingleProduct(undefined))
-        setterFunction(false)
+        setterFunction("no")
     
         if(scanOut === true){
           dispatch(hideModal())
           dispatch(resetBarcode())
           showToast("error", "Le produit n'est pas dans l'inventaire.", "Rentrer le produit dans l'inventaire d'abord.")
           
-        } else {
-          setterFunction(false)
-          dispatch(showModal())
         }
       }
       setLoading(false)    
