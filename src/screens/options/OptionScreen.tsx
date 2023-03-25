@@ -3,6 +3,7 @@ import { FC, useEffect } from "react"
 import { useDispatch } from "react-redux"
 import { resetBarcode } from "../../store/slices/dataBarCode"
 import { hideModal } from "../../store/slices/modal"
+import { getSingleProduct } from "../../store/slices/productsAndCategories"
 import DeleteCategoryScreen from "../deleteCategory/DeleteCategoryScreen"
 import DeleteProductScreen from "../deleteProduct/DeleteProductScreen"
 import HomeScreen from "../homeOptions/HomeOptionScreen"
@@ -22,9 +23,11 @@ const OptionScreen: FC = () => {
 
   useEffect(()=>{
     dispatch(hideModal())
+    dispatch(getSingleProduct(undefined))
 
     return()=>{
       dispatch(resetBarcode())
+      dispatch(getSingleProduct(undefined))
 
     }
   }, [])

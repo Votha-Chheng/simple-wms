@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { resetBarcode } from '../../store/slices/dataBarCode'
 import ScanningResult from '../../sharedUI/ScanningResult'
 import { hideModal } from '../../store/slices/modal'
+import { getSingleProduct } from '../../store/slices/productsAndCategories'
 
 const ScanOutScreen: FC = () => {
 
@@ -12,10 +13,12 @@ const ScanOutScreen: FC = () => {
   useEffect(()=>{
     dispatch(resetBarcode())
     dispatch(hideModal())
+    dispatch(getSingleProduct(undefined))
     
     return(()=> {
       dispatch(resetBarcode())
       dispatch(hideModal())
+      dispatch(getSingleProduct(undefined))
     })
   }, [])
 

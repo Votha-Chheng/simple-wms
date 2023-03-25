@@ -20,6 +20,7 @@ import ProductForm from '../../sharedUI/ProductForm'
 import { observeCategoriesList } from '../../services/categoryServices'
 import CategoryModel from '../../models/CategoryModel'
 import { selectMarqueOrCategory } from '../../store/slices/selectedMarqueOrCategory'
+import { useNavigation } from '@react-navigation/native'
 
 const ListeProduitsScreen: FC = () => {
   const [modify, setModify] = useState<boolean>(false)
@@ -32,21 +33,26 @@ const ListeProduitsScreen: FC = () => {
   const filters = { parType, alphabetique, ordreAlphabet, dateEntree, recent, alertStock, searchByText, searchInput }
 
   const { visible } = useSelector((state: RootState) => state.modal)
+  const { singleProduct } = useSelector((state: RootState) => state.productAndCategories)
 
   const {selectedMarqueOrCategory} = useSelector((state: RootState)=> state.selectedMarqueOrCategory)
 
   const db = useDatabase()
   const dispatch = useDispatch()
+  const navigation = useNavigation()
 
   useEffect(()=>{
     dispatch(resetBarcode())
     dispatch(hideModal())
     dispatch(selectMarqueOrCategory(null))
+    dispatch(getSingleProduct(undefined))
     
     return(()=> {
       dispatch(resetBarcode())
       dispatch(hideModal())
       dispatch(selectMarqueOrCategory(null))
+      setModify(false)
+      dispatch(getSingleProduct(undefined))
     })
   }, [])
 
@@ -90,7 +96,7 @@ const ListeProduitsScreen: FC = () => {
       ?
       <Loader spinnerColor='blue'/>
       :
-      modify
+      modify && singleProduct !== undefined
       ?
       <ProductForm newProduct={false} setModify={setModify}/>
       :

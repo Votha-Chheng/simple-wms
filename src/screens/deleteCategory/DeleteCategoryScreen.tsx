@@ -1,5 +1,5 @@
 import { StyleSheet, View } from 'react-native'
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import globalStyles from '../../utils/globalStyles'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
@@ -7,12 +7,17 @@ import DeleteCategoryOption from './components/DeleteCategoryOption'
 import ModifyCategoryOption from './components/ModifyCategoryOption'
 import { resetBarcode } from '../../store/slices/dataBarCode'
 import { hideModal } from '../../store/slices/modal'
+import { observeCategoriesList } from '../../services/categoryServices'
+import CategoryModel from '../../models/CategoryModel'
+import { useDatabase } from '@nozbe/watermelondb/hooks'
 
 const DeleteCategoryScreen: FC = () => {
+  const [categories, setCategories] = useState<CategoryModel[]>([])
 
   const {chosenOptionMenu} = useSelector((state: RootState)=> state.categoryTopMenu)
 
   const dispatch = useDispatch()
+  const db = useDatabase()
 
   useEffect(()=>{
     dispatch(resetBarcode())
@@ -24,12 +29,16 @@ const DeleteCategoryScreen: FC = () => {
     })
   }, [])
 
+  useEffect(() => {
+    observeCategoriesList(setCategories)
+  }, [db, observeCategoriesList])
+
   return (
     <View style={globalStyles.container}>
       {
         chosenOptionMenu === "supprimer" ? 
-        <DeleteCategoryOption /> : 
-        <ModifyCategoryOption />
+        <DeleteCategoryOption categories={categories} /> : 
+        <ModifyCategoryOption categories={categories} />
       }
     </View>
   )

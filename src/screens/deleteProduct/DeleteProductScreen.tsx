@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
 import { RootState } from '../../store/store'
 import { getSingleProduct } from '../../store/slices/productsAndCategories'
-import { deleteAllTablesAsync, deleteSingleProductWithoutCascadeAsync, findProductModelById, observeProductsList, setProductsFromCollection } from '../../services/productServices'
+import { deleteAllTablesAsync, findProductModelById, observeProductsList, setProductsFromCollection } from '../../services/productServices'
 import { showToast } from '../../utils/showToast'
 import FilterProducts from '../listeProduits/components/FilterProducts'
 import { Button } from 'react-native-paper'
@@ -91,17 +91,6 @@ const DeleteProductScreen: FC = () => {
   
       ]
     )
-  }
-
-  const deleteSingleProduct = async(id: string): Promise<void>=> {
-    const prod = await findProductModelById(id)    
-    const response = await prod.deleteSingleProductModel()
-
-    if(response){
-      showToast("success", 'Catégorie supprimée', "La catégorie a été supprimée.")
-    } else {
-      showToast("error", 'Erreur', "Une erreur est survenue !")
-    }
   }
 
 

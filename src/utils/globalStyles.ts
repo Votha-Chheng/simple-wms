@@ -34,21 +34,25 @@ const globalStyles = StyleSheet.create({
     fontSize: 12.5,
     fontFamily: "Inter-Medium",
     marginVertical:2.5,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    color:"#6e6e72"
   },
   marque: {
     fontSize: 20,
     fontFamily: "Rubik-MediumItalic",
-    marginVertical:2.5
+    marginVertical:2.5,
+    color:"#6e6e72"
   },
   nom: {
     fontSize: 17,
     fontFamily: "Rubik-SemiBoldItalic",
     marginVertical:2.5,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    color:"#6e6e72"
   },
   qty: {
     fontFamily: "Rubik-SemiBold",
+    color:"#6e6e72"
   },
   inpuQty : {
     marginBottom:10,

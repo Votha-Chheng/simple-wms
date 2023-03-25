@@ -4,7 +4,7 @@ import { IconButton } from 'react-native-paper'
 import CategoryTopMenu from './CategoryTopMenu'
 import { showToast } from '../../../utils/showToast'
 import { observeProductsList } from '../../../services/productServices'
-import { findCategoryModelById, observeCategoriesList } from '../../../services/categoryServices'
+import { findCategoryModelById } from '../../../services/categoryServices'
 import ProductModel from '../../../models/ProductModel'
 import { useDatabase } from '@nozbe/watermelondb/hooks'
 import CategoryModel from '../../../models/CategoryModel'
@@ -12,10 +12,12 @@ import { useDispatch } from 'react-redux'
 import { resetBarcode } from '../../../store/slices/dataBarCode'
 import { hideModal } from '../../../store/slices/modal'
 
+type DeleteCategoryOptionProps = {
+  categories : CategoryModel[]
+}
 
-const DeleteCategoryOption: FC = () => {
+const DeleteCategoryOption: FC<DeleteCategoryOptionProps> = ({categories}) => {
   const [productsCollection, setProductsCollection] = useState<ProductModel[]>([])
-  const [categories, setCategories] = useState<CategoryModel[]>([])
 
   const db = useDatabase()
 
@@ -34,10 +36,6 @@ const DeleteCategoryOption: FC = () => {
   useEffect(() => {
     observeProductsList(setProductsCollection)
   }, [db, observeProductsList])
-
-  useEffect(() => {
-    observeCategoriesList(setCategories)
-  }, [db, observeCategoriesList])
   
   const displayCategoriesToDelete = (): CategoryModel[]=>{
     const catWithProd: string[] = productsCollection.map(product => product.categoryId)
@@ -120,6 +118,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   renderItemText: {
-    padding: 10
+    padding: 10,
+    color: "grey"
   }
 })
