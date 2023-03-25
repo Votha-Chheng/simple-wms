@@ -1,6 +1,6 @@
 import { Linking, StyleSheet, Text, View } from 'react-native'
 import React, { FC, Dispatch, SetStateAction } from 'react'
-import { ActivityIndicator, Button, Switch } from 'react-native-paper'
+import { ActivityIndicator, Button, IconButton, Switch } from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux'
 import { hideModal } from '../../../store/slices/modal'
 import { getSingleProduct } from '../../../store/slices/productsAndCategories'
@@ -55,52 +55,43 @@ const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify, loading}:
           <Text style={[globalStyles.screenTitle, {marginBottom:20}]}>
             Code barre n° {singleProduct.barcodeNumber}
           </Text>
-          <View style={[styles.row]}>
-            <Text style={styles.textMarginRight}>
-              Nom : 
-            </Text>
-            <Text style={styles.value}>
-              {singleProduct.nom}
-            </Text>
-          </View>
-          <View style={[styles.row]}>
-            <Text style={[styles.textMarginRight]}>
-              Catégorie : 
-            </Text>
-            <Text style={styles.value}>
-              {singleProduct.category.nom}
-            </Text>
-          </View>
-          <View style={[styles.row]}>
-            <Text style={[styles.textMarginRight]}>
-              Fabricant : 
-            </Text>
-            <Text style={styles.marque}>
-              {singleProduct.marque}
-            </Text>  
-          </View>
-          
-          <View>
+          <Text style={styles.textMarginRight}>
+            Nom : 
+            <Text style={styles.value}> {singleProduct.nom}</Text>
+          </Text>
+          <Text style={[styles.textMarginRight]}>
+            Catégorie : 
+            <Text style={styles.value}> {singleProduct.category.nom}</Text>
+          </Text>
+          <Text style={[styles.textMarginRight]}>
+            Fabricant : 
+            <Text style={styles.marque}> {singleProduct.marque}</Text>  
+          </Text>
           {
-            singleProduct.telFournisseur !== null && singleProduct.telFournisseur !== "" 
-            &&
-            <View style={[styles.row]}>
-              <Text style={[styles.textMarginRight]} >N° de téléphone du fournisseur :</Text> 
-              <Text onPress={()=>Linking.openURL(`tel:${singleProduct.telFournisseur}`)}>{insertSpacesInTel(singleProduct.telFournisseur) }</Text> 
-            </View>     
+            singleProduct.telFournisseur !== null && singleProduct.telFournisseur !== "" &&
+            <View>
+              <Text style={[styles.textMarginRight, {alignItems:"flex-end", marginBottom:-5}]} >
+                Téléphone du fournisseur : 
+              </Text> 
+              <View style={{flexDirection:"row", alignItems:'center', marginLeft:25}}>
+                <IconButton style={{padding:0}} size={18} icon="phone" iconColor='green' onPress={()=>Linking.openURL(`tel:${singleProduct.telFournisseur}`)}/>
+                <Text style={[styles.value]}> {insertSpacesInTel(singleProduct.telFournisseur)}</Text>   
+              </View>   
+            </View>
           }
           {
             singleProduct.siteFournisseur !== null && singleProduct.siteFournisseur !== ""
             && 
-            <View style={[styles.row]}>
-              <Text style={[styles.textMarginRight]}>Site web du fournisseur :</Text> 
-              <Text onPress={()=> Linking.openURL("https://"+singleProduct.siteFournisseur)}>https://{singleProduct.siteFournisseur}</Text>
+            <View>
+              <Text style={[styles.textMarginRight]}>Site web du fournisseur :</Text>   
+              <Text style={[styles.value, {marginLeft:30, marginTop:5}]} onPress={()=> Linking.openURL("https://"+singleProduct.siteFournisseur)}> https://{singleProduct.siteFournisseur}</Text>
             </View>
+
           }
           {
             singleProduct.qty <= singleProduct.stockLimite 
             &&
-            <View style={[styles.row, {alignItems:"center", marginBottom:15}]}>
+            <View style={[styles.row, {alignItems:"center", marginVertical:15}]}>
               <Text style={[styles.textMarginRight, {marginHorizontal:5}]}>Commande du produit en cours ? :</Text> 
               {
                 loading
@@ -120,7 +111,6 @@ const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify, loading}:
               }
             </View>
           }
-          </View>
 
           <View style={globalStyles.buttonRow}>
             <Button 
@@ -160,7 +150,8 @@ const styles = StyleSheet.create({
     alignItems:"flex-end"
   },
   textMarginRight: {
-    marginRight: 10,
+    marginHorizontal: 10,
+    marginVertical:2.5,
     fontFamily:"Roboto-BoldItalic",
     color:"#6e6e72"
   },
