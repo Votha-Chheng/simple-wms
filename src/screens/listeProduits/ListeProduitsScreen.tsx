@@ -89,13 +89,11 @@ const ListeProduitsScreen: FC = () => {
     }
   }
 
+  if(loading) return <Loader spinnerColor='blue'/>
+
   return (
     <View style={styles.screenContainer}>
     {
-      loading 
-      ?
-      <Loader spinnerColor='blue'/>
-      :
       modify && singleProduct !== undefined
       ?
       <ProductForm newProduct={false} setModify={setModify}/>

@@ -16,39 +16,31 @@ type ScanningResultProps = {
 }
 
 const ScanningResult: FC<ScanningResultProps> = ({backgroundColor, addStock, newProduct, scanOut}) => {
-  const { visible } = useSelector((state: RootState)=> state.modal)
-  const { singleProduct } = useSelector((state: RootState)=> state.productAndCategories)
-
   const [loading, setLoading] = useState<boolean>(false)
   const [productExists, setProductExists] = useState<"undetermined"|"yes"|"no">("undetermined")
 
+  const { visible } = useSelector((state: RootState)=> state.modal)
+  const { singleProduct } = useSelector((state: RootState)=> state.productAndCategories)
+
+  if(loading) return <Loader backgroundColor={backgroundColor} />
+
   return (
-    <View style={{width: "100%", height:"100%"}}>
+    <View style={{width: "100%", height:"100%", backgroundColor}}>
     {
-      loading
-      ?
-      <Loader backgroundColor={backgroundColor}/>
-      :
-      productExists === "no" && !singleProduct && scanOut === false
-      ? 
+      productExists === "no" && singleProduct === undefined && scanOut === false  &&
       <ProductForm newProduct={newProduct} setProductExists={setProductExists} />
-      :
-      productExists === "undetermined" && !singleProduct
-      ?
-      <CameraView colorFrame={backgroundColor} title={scanOut ? "Consommer un produit":"Ajouter un produit"} scanOut={scanOut} setterFunction={setProductExists} setLoading={setLoading} />
-      :
-      null
+    }
+    {
+      productExists === "undetermined" && singleProduct === undefined &&
+      <CameraView colorFrame={backgroundColor} title={scanOut ? "Consommer un produit" : "Ajouter un produit"} scanOut={scanOut} setterFunction={setProductExists} setLoading={setLoading} />
     }
       <Modal isVisible={visible}>
-        <View>
-        {
-          productExists === "yes" && singleProduct 
-          ? <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} setProductExists={setProductExists} /> 
-          : null
-        }    
-        </View>
+      {
+        productExists === "yes" && singleProduct 
+        ? <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} setProductExists={setProductExists} /> 
+        : <View/>
+      }    
       </Modal>
-
     </View>
   )
 }

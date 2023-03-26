@@ -20,10 +20,9 @@ interface UpdatingProductStockProps {
 
 const UpdatingProductStock: FC<UpdatingProductStockProps> = ({addStock, scanOut, backgroundColor, setProductExists}) => {
   const [loading, setLoading] = useState<boolean>(false)
+  const [newQty, setNewQty] = useState<string>("1")
 
   const { singleProduct } = useSelector((state: RootState)=> state.productAndCategories)
-
-  const [newQty, setNewQty] = useState<string>("1")
 
   const dispatch = useDispatch()
 
