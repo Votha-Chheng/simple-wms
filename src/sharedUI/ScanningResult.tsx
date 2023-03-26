@@ -29,20 +29,27 @@ const ScanningResult: FC<ScanningResultProps> = ({backgroundColor, addStock, new
       ?
       <Loader backgroundColor={backgroundColor}/>
       :
-      productExists === "yes" && singleProduct
-      ?
-      <View style={{height: "100%", width:"100%", backgroundColor}}>
-        <Modal isVisible={visible}>
-          <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} /> 
-        </Modal>
-      </View>
-      :
       productExists === "no" && !singleProduct && scanOut === false
       ? 
       <ProductForm newProduct={newProduct} setProductExists={setProductExists} />
       :
+      productExists === "undetermined" && !singleProduct
+      ?
       <CameraView colorFrame={backgroundColor} title={scanOut ? "Consommer un produit":"Ajouter un produit"} scanOut={scanOut} setterFunction={setProductExists} setLoading={setLoading} />
+      :
+      null
     }
+      <View style={{height: "100%", width:"100%", backgroundColor}}>
+        <Modal isVisible={visible}>
+          <View>
+          {
+            productExists === "yes" && singleProduct 
+            ? <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} setProductExists={setProductExists} /> 
+            : null
+          }    
+          </View>
+        </Modal>
+      </View>
     </View>
   )
 }

@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native'
-import React, { FC, useState } from 'react'
+import React, { Dispatch, FC, SetStateAction, useState } from 'react'
 import globalStyles from '../utils/globalStyles'
 import { Button, TextInput } from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,9 +15,10 @@ interface UpdatingProductStockProps {
   addStock: boolean
   scanOut: boolean
   backgroundColor: string
+  setProductExists: Dispatch<SetStateAction<"undetermined"|"yes"|"no">>
 }
 
-const UpdatingProductStock: FC<UpdatingProductStockProps> = ({addStock, scanOut, backgroundColor}) => {
+const UpdatingProductStock: FC<UpdatingProductStockProps> = ({addStock, scanOut, backgroundColor, setProductExists}) => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const { singleProduct } = useSelector((state: RootState)=> state.productAndCategories)
@@ -43,6 +44,7 @@ const UpdatingProductStock: FC<UpdatingProductStockProps> = ({addStock, scanOut,
             dispatch(resetBarcode())
             dispatch(hideModal())
             dispatch(getSingleProduct(undefined))
+            setProductExists("undetermined")
 
             if(updatedProd.stockLimite<updatedProd.qty){
               await updatedProd.setComandeEncours(false)
@@ -62,6 +64,7 @@ const UpdatingProductStock: FC<UpdatingProductStockProps> = ({addStock, scanOut,
     dispatch(resetBarcode())
     setNewQty("1")
     showToast("info", "Stock inchangé", "Mise à jour du stock annulée.")
+    setProductExists("undetermined")
   }
   
   return (
@@ -76,12 +79,12 @@ const UpdatingProductStock: FC<UpdatingProductStockProps> = ({addStock, scanOut,
 
         <View style={{width:"50%", flexDirection:"row", alignItems:"center"}}>
           <View style={{width:"60%", justifyContent:"center"}}>
-            <Text style={{height: 50 }}>Qté actuelle : </Text>
-            <Text style={{height: 50 }}>{`Qté à ${scanOut ? "retirer":"ajouter"}` }: </Text>
-            <Text style={{fontFamily:"Rubik_600SemiBold", color:"purple"}}>Stock total : </Text>
+            <Text style={{height: 50, color:"#1DA1F2", fontWeight:"bold" }}>Qté actuelle : </Text>
+            <Text style={{height: 50, fontWeight:"bold", color:"grey" }}>{`Qté à ${scanOut ? "retirer":"ajouter"}` }: </Text>
+            <Text style={{fontFamily:"Rubik_600SemiBold", color:"purple", fontWeight:"bold"}}>Nouveau stock : </Text>
           </View>
           <View>
-            <Text style={{marginTop:5, height: 40, alignSelf: "center"}}>{singleProduct.qty}</Text>
+            <Text style={{marginTop:5, height: 40, alignSelf: "center", fontWeight:"bold", color:"#1DA1F2"}}>{singleProduct.qty}</Text>
             <TextInput
               mode='flat'
               label=""
@@ -95,7 +98,7 @@ const UpdatingProductStock: FC<UpdatingProductStockProps> = ({addStock, scanOut,
               dense={true}
               style={{marginTop:0}}
             />
-            <Text style={{marginBottom:10, marginTop: 25, fontFamily:"Rubik_600SemiBold", color: "purple"}}>{scanOut ? singleProduct.qty - (+newQty) : singleProduct.qty + (+newQty)}</Text>
+            <Text style={{marginBottom:10, marginTop: 25, marginRight:10, fontFamily:"Rubik_600SemiBold", color: "purple", fontWeight:"bold", alignSelf: "center"}}>{scanOut ? singleProduct.qty - (+newQty) : singleProduct.qty + (+newQty)}</Text>
           </View>
         </View>
       </View>
