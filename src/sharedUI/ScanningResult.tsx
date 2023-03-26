@@ -39,17 +39,16 @@ const ScanningResult: FC<ScanningResultProps> = ({backgroundColor, addStock, new
       :
       null
     }
-      <View style={{height: "100%", width:"100%", backgroundColor}}>
-        <Modal isVisible={visible}>
-          <View>
-          {
-            productExists === "yes" && singleProduct 
-            ? <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} setProductExists={setProductExists} /> 
-            : null
-          }    
-          </View>
-        </Modal>
-      </View>
+      <Modal isVisible={visible}>
+        <View>
+        {
+          productExists === "yes" && singleProduct 
+          ? <UpdatingProductStock addStock={addStock} scanOut={scanOut} backgroundColor={backgroundColor} setProductExists={setProductExists} /> 
+          : null
+        }    
+        </View>
+      </Modal>
+
     </View>
   )
 }

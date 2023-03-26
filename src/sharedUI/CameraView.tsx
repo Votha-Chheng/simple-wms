@@ -47,6 +47,7 @@ const CameraView: FC<CameraProps> = ({colorFrame, title, scanOut, setterFunction
         setterFunction("no")
     
         if(scanOut === true){
+          setterFunction("undetermined")
           dispatch(hideModal())
           dispatch(resetBarcode())
           showToast("error", "Le produit n'est pas dans l'inventaire.", "Rentrer le produit dans l'inventaire d'abord.")
