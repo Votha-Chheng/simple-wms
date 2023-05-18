@@ -10,6 +10,7 @@ import globalStyles from '../../../utils/globalStyles'
 import { insertSpacesInTel } from '../../../utils/insertSpacesInTel'
 import { findProductModelById } from '../../../services/productServices'
 import ProductModel from '../../../models/ProductModel'
+import { displayBarcode } from '../../../utils/displayBarcode'
 
 type DisplayProductInfosProps = {
   setModify: Dispatch<SetStateAction<boolean>>
@@ -53,7 +54,7 @@ const DisplayProductInfos: FC<DisplayProductInfosProps> = ({setModify, loading}:
         singleProduct !==undefined &&
         <View>
           <Text style={[globalStyles.screenTitle, {marginBottom:20}]}>
-            Code barre n° {singleProduct.barcodeNumber}
+            Code barre n° {displayBarcode(singleProduct.barcodeNumber)}
           </Text>
           <Text style={styles.textMarginRight}>
             Nom : 

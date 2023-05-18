@@ -16,8 +16,9 @@ type ScanningResultProps = {
 }
 
 const ScanningResult: FC<ScanningResultProps> = ({backgroundColor, addStock, newProduct, scanOut}) => {
+
   const [loading, setLoading] = useState<boolean>(false)
-  const [productExists, setProductExists] = useState<"undetermined"|"yes"|"no">("undetermined")
+  const [productExists, setProductExists] = useState<"undetermined"|"yes"|"no"|"unreadable">("undetermined")
 
   const { visible } = useSelector((state: RootState)=> state.modal)
   const { singleProduct } = useSelector((state: RootState)=> state.productAndCategories)
@@ -27,12 +28,17 @@ const ScanningResult: FC<ScanningResultProps> = ({backgroundColor, addStock, new
   return (
     <View style={{width: "100%", height:"100%", backgroundColor}}>
     {
-      productExists === "no" && singleProduct === undefined && scanOut === false  &&
+      (productExists === "no" && !singleProduct && scanOut === false)  &&
       <ProductForm newProduct={newProduct} setProductExists={setProductExists} />
     }
+      {
+        productExists === "unreadable" && !singleProduct 
+        ? <ProductForm newProduct={newProduct} productExists={productExists} setProductExists={setProductExists} />
+        : <View/>
+      }    
     {
-      productExists === "undetermined" && singleProduct === undefined &&
-      <CameraView colorFrame={backgroundColor} title={scanOut ? "Consommer un produit" : "Ajouter un produit"} scanOut={scanOut} setterFunction={setProductExists} setLoading={setLoading} />
+      (productExists === "undetermined" && !singleProduct) &&
+      <CameraView colorFrame={backgroundColor} title={scanOut ? "Consommer un produit" : "Ajouter un produit"} scanOut={scanOut} setProductExists={setProductExists} setLoading={setLoading} />
     }
       <Modal isVisible={visible}>
       {

@@ -7,5 +7,5 @@ export type Filters = {
   searchInput: string
   alertStock: boolean
   searchByText:string
-  
+  unreadableBarcode: boolean;
 }

@@ -94,11 +94,15 @@ const globalStyles = StyleSheet.create({
     borderRadius:10
   },
   scanInOutTitle: {
-    fontFamily:"Inter-Medium",
+    fontFamily:"Inter-Bold",
     textAlign:"center", 
     alignSelf:"center", 
     fontSize:25, 
-    color:"white"
+    color:"white",
+    letterSpacing: 1,
+    textShadowColor: 'black',
+    textShadowOffset: {width: 1.5, height: 1.5},
+    textShadowRadius: 1
   }
 })
 

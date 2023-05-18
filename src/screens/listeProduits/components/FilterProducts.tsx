@@ -3,7 +3,7 @@ import React, { FC } from 'react'
 import { Chip } from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../store/store'
-import { resetFilters, setAlertStock, setAlphabetique, setDateEntree, setOrdreAlphabet, setParType, setRecent } from '../../../store/slices/filters'
+import { setAlertStock, setAlphabetique, setDateEntree, setOrdreAlphabet, setParType, setRecent, setUnreadableBarcode } from '../../../store/slices/filters'
 import SearchResult from './SearchResult'
 import ResultWithText from './ResultWithText'
 import { selectMarqueOrCategory } from '../../../store/slices/selectedMarqueOrCategory'
@@ -16,7 +16,7 @@ type FilterProductsProps = {
 
 const FilterProducts: FC<FilterProductsProps> = ({products}) => {
 
-  const { parType, alphabetique, ordreAlphabet, dateEntree, recent, alertStock, searchByText } = useSelector((state: RootState) => state.filters)
+  const { parType, alphabetique, ordreAlphabet, dateEntree, recent, alertStock, searchByText, unreadableBarcode } = useSelector((state: RootState) => state.filters)
 
   const {selectedMarqueOrCategory} = useSelector((state: RootState)=> state.selectedMarqueOrCategory)
 
@@ -48,7 +48,6 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
 
     } else {
       return liste
-
     }
   }
 
@@ -58,52 +57,66 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
       <View style={styles.filters}>
         <Chip 
           style={styles.chipStyle}
-          mode={ (parType === "" && alertStock === false) ? 'flat': "outlined"}
+          mode={ (parType === "") ? 'flat': "outlined"}
           icon="cancel" 
-          onPress={() => dispatch(resetFilters())}
+          onPress={() => {
+            dispatch(setParType(""))
+            dispatch(selectMarqueOrCategory(null))
+            dispatch(setDateEntree(true))
+            dispatch(setRecent(true))
+          }}
           >
           Sans
         </Chip>
         <Chip 
           style={styles.chipStyle}
-          mode={(parType === "marque" && alertStock === false) ? "flat":"outlined"} 
+          mode={(parType === "marque") ? "flat":"outlined"} 
           icon="watermark" 
           onPress={() => {
             dispatch(setParType("marque"))
             dispatch(setOrdreAlphabet(true))
             dispatch(setAlphabetique(true))
-            dispatch(setAlertStock(false))
             dispatch(selectMarqueOrCategory(null))
+            dispatch(setDateEntree(false))
           }}
           >
           Marque
         </Chip>
         <Chip 
           style={styles.chipStyle}
-          mode={(parType === "category" && alertStock === false) ? "flat":"outlined"}
-          selected={(parType === "category" && alertStock === false)} 
+          mode={(parType === "category") ? "flat":"outlined"}
+          selected={(parType === "category")} 
           icon="shape" 
           onPress={() => {
             dispatch(setParType("category"))
             dispatch(setOrdreAlphabet(true))
-            dispatch(setAlertStock(false))
             dispatch(selectMarqueOrCategory(null))
+            dispatch(setDateEntree(false))
           }}
           >
           Catégorie
         </Chip>
         <Chip 
           style={styles.chipStyle}
-          mode={alertStock === true ? "flat":"outlined"}
-          selected={alertStock === true} 
+          mode={alertStock ? "flat":"outlined"}
+          selected={alertStock} 
           icon="alert-outline" 
           onPress={() => {
-            dispatch(setParType(""))
-            dispatch(setRecent(true))
             dispatch(setAlertStock(!alertStock))
           }}
         >
           Critique
+        </Chip>
+        <Chip 
+          style={styles.chipStyle}
+          mode={unreadableBarcode ? "flat":"outlined"}
+          selected={unreadableBarcode} 
+          icon="barcode-off" 
+          onPress={() => {
+            dispatch(setUnreadableBarcode(!unreadableBarcode))
+          }}
+        >
+          Code-barre illisible
         </Chip>
       </View>
       <View style={{marginVertical:10, height:50}}>
@@ -125,20 +138,11 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
       <Text style={{textAlign:"center", fontFamily:"Inter-SemiBold", fontSize:15, color:"#6e6e72"}}>Trier selon :</Text>
       <View style={styles.filters}>
         <Chip 
-          mode={
-            (dateEntree === true && recent == true) && 
-            (
-              (parType === ""  && selectedMarqueOrCategory === null && alertStock === false) || 
-              (parType === "" && alertStock === true && selectedMarqueOrCategory === null) ||
-              (parType !== "" && selectedMarqueOrCategory !== null)
-            )
-            
-            ? "flat"
-            :"outlined"
-          }
+          mode={(dateEntree && recent)  ? "flat":"outlined"}
           icon="sort-calendar-ascending"
           disabled={
-            ((parType === "marque") && (selectedMarqueOrCategory === null)) ||
+            ((parType === "marque") && (selectedMarqueOrCategory === null)) 
+            ||
             ((parType === "category") && (selectedMarqueOrCategory === null))
           }
           onPress={() => {
@@ -154,7 +158,7 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
           mode={
             (dateEntree === true && recent == false) && 
             (
-              (parType === ""  && selectedMarqueOrCategory === null && alertStock === false) || 
+              (parType === ""  && selectedMarqueOrCategory === null) || 
               (parType === "" && alertStock === true && selectedMarqueOrCategory === null) ||
               (parType !== "" && selectedMarqueOrCategory !== null)
             )
@@ -180,14 +184,12 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
             alphabetique === true && 
             ordreAlphabet === true && 
             parType !== "" && 
-            alertStock === false && 
             selectedMarqueOrCategory === null
             ? "flat"
             :"outlined"
           }
           disabled={
             parType === "" || 
-            alertStock === true ||
             selectedMarqueOrCategory !== null
           }
           icon="sort-alphabetical-ascending" 
@@ -205,14 +207,12 @@ const FilterProducts: FC<FilterProductsProps> = ({products}) => {
             alphabetique === true && 
             ordreAlphabet === false && 
             parType !== "" &&  
-            alertStock === false &&
             selectedMarqueOrCategory === null
             ? "flat"
             :"outlined"
           }
           disabled={
             parType === "" || 
-            alertStock === true ||
             selectedMarqueOrCategory !== null
           }
           icon="sort-alphabetical-descending" 

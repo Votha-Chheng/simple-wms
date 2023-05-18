@@ -1,10 +1,9 @@
 import { StyleSheet, View } from 'react-native'
 import React, { FC, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { resetBarcode } from '../../store/slices/dataBarCode'
 import ScanningResult from '../../sharedUI/ScanningResult'
 import { hideModal } from '../../store/slices/modal'
-import { RootState } from '../../store/store'
 import { getSingleProduct } from '../../store/slices/productsAndCategories'
 
 const ScanInScreen: FC = () => {

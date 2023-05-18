@@ -21,6 +21,7 @@ import { observeCategoriesList } from '../../services/categoryServices'
 import CategoryModel from '../../models/CategoryModel'
 import { selectMarqueOrCategory } from '../../store/slices/selectedMarqueOrCategory'
 import { useNavigation } from '@react-navigation/native'
+import { Filters } from '../../classes/Filters'
 
 const ListeProduitsScreen: FC = () => {
   const [modify, setModify] = useState<boolean>(false)
@@ -29,8 +30,8 @@ const ListeProduitsScreen: FC = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<CategoryModel[]>([])
 
-  const { parType, alphabetique, ordreAlphabet, dateEntree, recent, alertStock, searchByText, searchInput } = useSelector((state: RootState) => state.filters)
-  const filters = { parType, alphabetique, ordreAlphabet, dateEntree, recent, alertStock, searchByText, searchInput }
+  const { parType, alphabetique, ordreAlphabet, dateEntree, recent, alertStock, searchByText, searchInput, unreadableBarcode } = useSelector((state: RootState) => state.filters)
+  const filters: Filters = { parType, alphabetique, ordreAlphabet, dateEntree, recent, alertStock, searchByText, searchInput, unreadableBarcode }
 
   const { visible } = useSelector((state: RootState) => state.modal)
   const { singleProduct } = useSelector((state: RootState) => state.productAndCategories)

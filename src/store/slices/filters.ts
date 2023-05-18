@@ -10,7 +10,8 @@ const initialState: Filters = {
   recent: true,
   searchInput : "",
   alertStock: false,
-  searchByText:""
+  searchByText:"",
+  unreadableBarcode: false
 }
 
 const filterSlice = createSlice({
@@ -25,7 +26,8 @@ const filterSlice = createSlice({
       state.recent = true,
       state.searchInput = "",
       state.alertStock = false,
-      state.searchByText = ""
+      state.searchByText = "",
+      state.unreadableBarcode = false
     },
     setParType : (state, action) =>{
       state.parType = action.payload
@@ -50,10 +52,13 @@ const filterSlice = createSlice({
     },
     setSearchByText : (state, action) =>{
       state.searchByText = action.payload
+    },
+    setUnreadableBarcode: (state, action)=> {
+      state.unreadableBarcode = action.payload
     }
   }
 })
 
-export const {resetFilters, setParType, setAlphabetique, setOrdreAlphabet, setDateEntree, setRecent, setSearchInput, setAlertStock, setSearchByText} = filterSlice.actions
+export const {resetFilters, setParType, setAlphabetique, setOrdreAlphabet, setDateEntree, setRecent, setSearchInput, setAlertStock, setSearchByText, setUnreadableBarcode} = filterSlice.actions
 
 export default filterSlice.reducer

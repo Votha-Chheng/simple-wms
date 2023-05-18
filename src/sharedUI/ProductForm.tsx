@@ -17,20 +17,23 @@ import CategoryModel from '../models/CategoryModel'
 import Loader from './Loader'
 import { findCategoryModelByName } from '../services/categoryServices'
 import ServiceResponse from '../classes/ServiceResponse'
+import { displayBarcode } from '../utils/displayBarcode'
 
 type ProductFormProps = {
   newProduct: boolean
-  setProductExists?: Dispatch<SetStateAction<"undetermined"|"yes"|"no">>
+  setProductExists?: Dispatch<SetStateAction<"undetermined"|"yes"|"no"|"unreadable">>
+  productExists?: "undetermined"|"yes"|"no"|"unreadable"
   setModify?: Dispatch<SetStateAction<boolean>>
 }
 
-const ProductForm: FC<ProductFormProps> = ({newProduct, setModify, setProductExists}: ProductFormProps) => {
+const ProductForm: FC<ProductFormProps> = ({newProduct, setModify, setProductExists, productExists}: ProductFormProps) => {
 
   const {barcode} = useSelector((state: RootState)=> state.codeBarDataType)
   const {singleProduct} = useSelector((state: RootState)=> state.productAndCategories)
 
   const [loading, setLoading] = useState<boolean>(false)
   const [barcodeExisting, setBarcodeExisting] = useState<string>("")
+  const [barcodeManual, setBarcodeManual] = useState<string>("")
   const [marqueInput, setMarqueInput] = useState<string>("")
   const [nomInput, setNomInput] = useState<string>("")
   const [categoryInput, setCategoryInput] = useState<string>("")
@@ -61,7 +64,7 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify, setProductExi
   
     if(category){
       return {
-        barcodeNumber: barcode||barcodeExisting,
+        barcodeNumber: barcode || barcodeExisting ||`manual_${barcodeManual}`,
         marque: marqueInput,
         nom: nomInput,
         categoryId: category.id,
@@ -71,20 +74,18 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify, setProductExi
         siteFournisseur: webSite
       }
     } else {
-      console.log("Error coming from getFormBody: " )
-      console.log(category)
       showToast("error", "Erreur de formulaire", `Le formulaire semble incomplet...`)
     }
   }
 
   //Form validator
   const handleFormValidation = (body:ProductDto): boolean=> {
-    if(body.categoryId === undefined || body.categoryId === null) return false
-    if(body.barcodeNumber === undefined || body.barcodeNumber === "" || body.barcodeNumber === null) return false
-    if(body.nom === undefined || body.nom === "" || body.nom === null) return false
-    if(body.marque === undefined || body.marque === "" || body.marque === null) return false
-    if(body.qty === undefined || body.qty === null) return false
-    if(body.stockLimite === undefined || body.stockLimite === null) return false
+    if(!body.categoryId) return false
+    if(!body.barcodeNumber || body.barcodeNumber === "" ||  body.barcodeNumber === "manual_") return false
+    if(!body.nom || body.nom === "" ) return false
+    if(!body.marque || body.marque === "") return false
+    if(!body.qty) return false
+    if(!body.stockLimite) return false
 
     return true
   }
@@ -109,8 +110,9 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify, setProductExi
             showToast("success", `Produit créé`, `Le produit ${response.data.nom} est rentré dans l'inventaire.`)
             setLoading(false)
             dispatch(getSingleProduct(undefined))
+            setBarcodeManual("")
           } else {
-            showToast("error", "Erreur", `Une erreur est survenue, rejeté...`)
+            showToast("error", "Erreur", `Une erreur est survenue, produit rejeté...`)
             setLoading(false)
           }
         }
@@ -119,7 +121,6 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify, setProductExi
         setLoading(false)
       }
     } catch (error) {
-      console.log(error)
       showToast("error", "Erreur", `Une erreur est survenue...`)
       dispatch(getSingleProduct(undefined))
       setLoading(false)
@@ -164,28 +165,49 @@ const ProductForm: FC<ProductFormProps> = ({newProduct, setModify, setProductExi
             showToast("error", `Mise à jour avortée`, `Le produit ${prodModel.nom} n'a été modifié.`)
           }
         }
-        
       } else {
         setLoading(false)
         showToast("error", "Mise à jour avortée", `La mise à jour n'a pas pu se faire. Il manque peut-être des informations.`)
       } 
       
     } catch (error) {
-      console.log(error)
       setLoading(false)
       showToast("error", "Mise à jour avortée", `Une erreur est survenue...`)
     }
   }
+
+
 
   if(loading) return <Loader spinnerColor='blue' />
 
   return (
     <ScrollView style={{width:"100%", backgroundColor:"#f8f4f9", padding:10}}>
       <Text style={styles.title}>{newProduct ? "Nouveau produit": "Modifier les infos produit"}</Text>
-      <View style={{marginVertical:10, alignItems:"center"}}>
-        <Text style={{color:"#6e6e72"}}>Code-barre n° 
-          <Text style={styles.type}>{newProduct === true ? barcode : barcodeExisting}</Text>
+      {
+        productExists === 'unreadable' &&
+        <Text style={styles.warning}>
+          <Text style={styles.attention}>Attention :</Text> 
+          &nbsp;En cas de code-barre illisible, vous pouvez seulement rentrer un nouveau produit. <Text style={styles.attention}>Si vous voulez modifier sa quantité, modifiez-la dans l'inventaire.</Text> Dans le filtre de recherche, sélectionnez l'onglet "Code-barre illisible" pour afficher seulement les produits concernés.
         </Text>
+      }
+      <View style={{marginVertical:10, alignItems:"center"}}>
+        {
+          productExists === "unreadable"
+          ?
+          <View style={{width: "100%"}}>
+            <TextInPutComponent
+              label="Code-barre n°"
+              setter={setBarcodeManual}
+              stateValue={barcodeManual}
+            />
+          </View>
+          :
+          <Text style={{color:"#6e6e72"}}>Code-barre n° 
+            <Text style={styles.type}>
+              {displayBarcode(newProduct ? barcode: barcodeExisting)}
+            </Text>
+          </Text>
+        }
       </View>
       {
         newProduct &&
@@ -326,8 +348,18 @@ const styles = StyleSheet.create({
     marginBottom:10,
     color: "#6e6e72"
   },
+  warning: {
+    color: "red",
+    fontSize: 16,
+    padding: 5
+  },
+  attention: {
+    fontFamily: "Roboto-Bold",
+    textDecorationColor: "red",
+    textDecorationLine: "underline" 
+  },
   type : {
-    fontFamily: "Roboto_900Black"
+    fontFamily: "Roboto-Black"
   },
   categoryTags: {
     marginHorizontal: 5,

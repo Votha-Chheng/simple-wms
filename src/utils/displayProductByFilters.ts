@@ -48,7 +48,7 @@ export const handleSearchChange = (text: string, productList: Product[]): Produc
 }
 
 export const displayProductByFilters = (productList: ProductModel[], filters: Filters, selectedMarqueOrCategory: string, categoriesCollection: CategoryModel[]): Product[]=>{
-  const { parType, ordreAlphabet, recent, alertStock, searchByText } = filters
+  const { parType, ordreAlphabet, recent, alertStock, searchByText, unreadableBarcode } = filters
 
   let temp : Product[] = [...productList]
   
@@ -58,7 +58,6 @@ export const displayProductByFilters = (productList: ProductModel[], filters: Fi
 
     if(searchByText.length>1){
       temp = handleSearchChange(searchByText, temp)
-
     }
   }
 
@@ -86,5 +85,12 @@ export const displayProductByFilters = (productList: ProductModel[], filters: Fi
     }
   }
 
-  return alertStock === true ? temp.filter(p => p.qty <= p.stockLimite) : temp
+  if(unreadableBarcode){
+    temp = temp.filter(p => p.barcodeNumber.includes("manual_"))
+  }
+  if(alertStock){
+    temp = temp.filter(p => p.qty <= p.stockLimite)
+  }
+
+  return temp
 }
