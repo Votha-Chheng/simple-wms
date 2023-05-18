@@ -1,16 +1,21 @@
-import { StyleSheet, View } from 'react-native'
+import { Linking, StyleSheet, View } from 'react-native'
 import { Button } from 'react-native-paper';
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { OptionStackParams } from '../options/OptionScreen';
 import { createAlertWithTwoButtons } from '../../utils/buttonAlert';
 import { deleteAllTablesAsync } from '../../services/productServices';
+import PrivacyPolicy from '../privacyPolicy/PrivacyPolicy';
 
 const HomeOptionScreen : FC = () => {
+  const [displayPrivacy, setDisplayPrivacy] = useState<boolean>(false)
   const navigation = useNavigation<NativeStackNavigationProp<OptionStackParams>>()
 
-  return (
+  if(displayPrivacy) {
+    return <PrivacyPolicy setDisplayPrivacy={setDisplayPrivacy}/>
+
+  } else return (
     <View style={styles.container}>
       <Button 
         icon="arrow-down-bold" 
@@ -38,6 +43,15 @@ const HomeOptionScreen : FC = () => {
         style={styles.buttonStyle}
       >
         Réinitialiser l'inventaire
+      </Button>
+      <Button 
+        icon="arrow-down-bold" 
+        buttonColor='black' 
+        mode="contained" 
+        onPress={() => setDisplayPrivacy(true)}
+        style={styles.buttonStyle}
+      >
+        Politique de confidentialité
       </Button>
     </View>
   )
